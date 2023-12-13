@@ -303,8 +303,8 @@ WHERE TEAMS.TOTAL_WIN > 20000000;
 -----------------------------------------------------------------------
 ----------------------------               ----------------------------
 -----------------------         Functions       -----------------------
------------------------                         -----------------------
-----------------------------               ----------------------------
+-----------------------             and         -----------------------
+----------------------------   Procedures  ----------------------------
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION startDateByNickname(nn text)
     RETURNS date
@@ -323,6 +323,18 @@ begin
 end;
 $$;
 
-SELECT startDateByNickname('Miposhka')
-
+CREATE OR REPLACE PROCEDURE getPlayerData(teamID int, dollarPrize int)
+    LANGUAGE PLPGSQL
+AS $$
+BEGIN
+    UPDATE TEAMS
+    SET TOTAL_WIN = TEAMS.TOTAL_WIN + dollarPrize
+    WHERE teamID = TEAMS.ID;
+    COMMIT;
+END;
+$$;
+SELECT startDateByNickname('Miposhka');
+SELECT * FROM TEAMS;
+CALL getPlayerData(1, 600);
+SELECT * FROM TEAMS;
 
