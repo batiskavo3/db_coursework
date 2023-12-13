@@ -158,25 +158,16 @@ INSERT INTO SPONSORS (NAME, DESCRIPTION) VALUES ('WinLine', 'The best booking ma
 INSERT INTO SPONSORS (NAME, DESCRIPTION) VALUES ('RedBull', 'The best energy drink');
 INSERT INTO SPONSORS (NAME, DESCRIPTION) VALUES ('Shell', 'The best motor fuel');
 
-INSERT INTO SPONSORS_ORGANIZATIONS (START_DATE, END_DATE, SPONSOR_ID, ORG_ID, BUDGET) VALUES ('2020-12-19', '2021-11-19', 1, 1, 700000),
-                                                                                             ('2021-12-01', '2022-03-11', 1, 3, 900000),
-                                                                                             ('2019-12-01', '2022-02-11', 2, 4, 608000);
-
 INSERT INTO JOBS (DESCRIPTION, SALARY) VALUES ('Community caster', 1600),
                                               ('Cleaner', 600),
                                               ('Operator', 1300);
 
-INSERT INTO EMPLOYERS (FS_NAME, SC_NAME, JOD_ID, ORG_ID, AGE) VALUES ('Alexander', 'Levin', 1, 1, 27),
-                                                                     ('Dmitry', 'Kaplan', 2, NULL, 20),
-                                                                     ('Oleg', 'Bocharov' ,3, 1, 29);
-
-INSERT INTO EMPLOYEE_COOPERATION (EMPLOYEE_ID, ORG_ID) VALUES (1, 1), (3, 1);
 
 INSERT INTO COUNTRY (NAME, REG_ID) VALUES ('Russia', 1), ('Belarus', 1), ('Ukraine', 1),
                                           ('Germany', 2), ('Netherlands', 2), ('Denmark', 2), ('North America', 2);
 
-INSERT INTO TOURNAMENTS (NAME, PRIZE_POOL, GM_ID, CON_ID) VALUES ('The International 2023', 4000000, 1, 'North America');
-INSERT INTO TM_ON_TOUR (TM_ID, TOUR_ID) VALUES (1, 1), (2, 1), (3, 1), (4, 1);
+INSERT INTO TOURNAMENTS (NAME, PRIZE_POOL, GM_ID, CON_ID) VALUES ('The International 2023', 4000000, 1, 7);
+
 
 ------------------------TEAM SPIRIT------------------------
 
@@ -219,8 +210,8 @@ INSERT INTO PLRS_TM (PLR_ID, TM_ID, START_DATE, END_DATE) VALUES (6, 2, '2022-02
             (10, 2, '2022-02-08', CURRENT_DATE);
 ------------------------Team Secret------------------------
 
-INSERT INTO ORGANIZATIONS (NAME, DESCRIPTION)  VALUES ('9Pandas is an esports organization based in Belgrade, Serbia. '
-    'They entered the Dota 2 competitive scene in April 2023.'); -- 3
+INSERT INTO ORGANIZATIONS (NAME, DESCRIPTION)  VALUES ('9Pandas', 'is an esports organization based in Belgrade, Serbia. ' ||
+                                                       'They entered the Dota 2 competitive scene in April 2023.'); -- 3
 
 INSERT INTO TEAMS (ORG_ID, GAME_ID, TOTAL_WIN, REGION_ID) VALUES (3, 1, 1084569, 1); -- 1
 
@@ -255,6 +246,22 @@ INSERT INTO PLRS_TM (PLR_ID, TM_ID, START_DATE, END_DATE) VALUES (16, 4, '2022-1
             (19, 4, '2022-12-08', CURRENT_DATE),
             (20, 4, '2022-12-08', CURRENT_DATE);
 
+-----------------------------------------------------------------------
+----------------------------               ----------------------------
+-----------------------         Many            -----------------------
+-----------------------           to            -----------------------
+----------------------------    Many       ----------------------------
+-----------------------------------------------------------------------
+
+INSERT INTO SPONSORS_ORGANIZATIONS (START_DATE, END_DATE, SPONSOR_ID, ORG_ID, BUDGET) VALUES ('2020-12-19', '2021-11-19', 1, 1, 700000),
+                                                                                             ('2021-12-01', '2022-03-11', 1, 3, 900000),
+                                                                                             ('2019-12-01', '2022-02-11', 2, 4, 608000);
+INSERT INTO EMPLOYERS (FS_NAME, SC_NAME, JOD_ID, ORG_ID, AGE) VALUES ('Alexander', 'Levin', 1, 1, 27),
+                                                                     ('Dmitry', 'Kaplan', 2, NULL, 20),
+                                                                     ('Oleg', 'Bocharov' ,3, 1, 29);
+
+INSERT INTO EMPLOYEE_COOPERATION (EMPLOYEE_ID, ORG_ID) VALUES (1, 1), (3, 1);
+INSERT INTO TM_ON_TOUR (TM_ID, TOUR_ID) VALUES (1, 1), (2, 1), (3, 1), (4, 1);
 -----------------------------------------------------------------------
 ----------------------------               ----------------------------
 -----------------------         Indexes         -----------------------
@@ -299,5 +306,23 @@ WHERE TEAMS.TOTAL_WIN > 20000000;
 -----------------------                         -----------------------
 ----------------------------               ----------------------------
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION startDateByNickname (nickname text){}
+CREATE OR REPLACE FUNCTION startDateByNickname(nn text)
+    RETURNS date
+    LANGUAGE plpgsql
+AS
+$$
+DECLARE
+    startDate date;
+begin
+    SELECT START_DATE
+    INTO startDate
+    FROM PLRS_TM
+    JOIN PLAYERS ON PLRS_TM.PLR_ID = PLAYERS.ID
+    WHERE PLAYERS.NICKNAME = nn;
+    RETURN startDate;
+end;
+$$;
+
+SELECT startDateByNickname('Miposhka')
+
 
